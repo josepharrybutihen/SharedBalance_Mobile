@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="55dp"
+    android:orientation="horizontal"
+    android:paddingHorizontal="10dp"
+    android:gravity="center_vertical"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/tvGroupName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.4"
+        android:text="Champs Outing"
+        android:textSize="12sp"
+        android:textColor="#111111" />
+
+    <TextView
+        android:id="@+id/tvTransactionType"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.2"
+        android:text="Expense Added"
+        android:textSize="12sp"
+        android:textColor="#159A78"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.8"
+        android:text="May 14"
+        android:textSize="12sp"
+        android:textColor="#666666"
+        android:gravity="end" />
+
+</LinearLayout>
