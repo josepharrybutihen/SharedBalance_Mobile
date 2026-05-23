@@ -1,5 +1,6 @@
 package com.example.sharedbalance.screens.home
 
+import com.example.sharedbalance.data.api.ApiResponse
 import com.example.sharedbalance.screens.expenses.Group
 
 import retrofit2.Call
@@ -32,18 +33,14 @@ interface HomeContract {
     interface Presenter {
 
         fun loadHomeData(
-            userId: Int
+            email: String
         )
     }
 
     interface Model {
 
-        fun getSummary(
-            userId: Int
-        ): Call<HomeSummaryResponse>
+        fun getSummary(email: String): Call<Map<String, Any>>
 
-        fun getGroups(
-            userId: Int
-        ): Call<List<Group>>
+        fun getGroups(email: String): Call<ApiResponse<List<Group>>>
     }
 }

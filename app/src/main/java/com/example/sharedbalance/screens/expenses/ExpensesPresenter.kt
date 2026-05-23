@@ -1,5 +1,6 @@
 package com.example.sharedbalance.screens.expenses
 
+import com.example.sharedbalance.data.api.ApiResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -9,44 +10,60 @@ class ExpensesPresenter(
     private val model: ExpensesContract.Model
 ) : ExpensesContract.Presenter {
 
-    override fun loadGroups() {
+    override fun loadData(email: String) {
+        loadGroups(email)
+        loadBalance(email)
+    }
 
-        model.getGroups()
-            .enqueue(
+    private fun loadGroups(email: String) {
+        model.getGroups(email)
+            .enqueue(object : Callback<ApiResponse<List<Group>>> {
 
-                object :
-                    Callback<List<Group>> {
+                override fun onResponse(
+                    call: Call<ApiResponse<List<Group>>>,
+                    response: Response<ApiResponse<List<Group>>>
+                ) {
+                    val groups = response.body()?.payload?.reversed()
 
-                    override fun onResponse(
-                        call: Call<List<Group>>,
-                        response: Response<List<Group>>
-                    ) {
-
-                        if (response.isSuccessful) {
-
-                            response.body()?.let {
-
-                                view.showGroups(it)
-                            }
-
-                        } else {
-
-                            view.showError(
-                                "Failed to load groups"
-                            )
-                        }
-                    }
-
-                    override fun onFailure(
-                        call: Call<List<Group>>,
-                        t: Throwable
-                    ) {
-
-                        view.showError(
-                            t.message ?: "Unknown error"
-                        )
+                    if (response.isSuccessful && !groups.isNullOrEmpty()) {
+                        view.showGroups(groups)
+                    } else {
+                        view.showGroups(emptyList())
                     }
                 }
-            )
+
+                override fun onFailure(
+                    call: Call<ApiResponse<List<Group>>>,
+                    t: Throwable
+                ) {
+                    view.showError(t.message ?: "Groups failed")
+                }
+            })
+    }
+
+    private fun loadBalance(email: String) {
+        model.getBalance(email)
+            .enqueue(object : Callback<Map<String, Any>> {
+
+                override fun onResponse(
+                    call: Call<Map<String, Any>>,
+                    response: Response<Map<String, Any>>
+                ) {
+                    val body = response.body()
+                    if (response.isSuccessful && body != null) {
+                        val toPay = (body["toPay"] as? Number)?.toDouble() ?: 0.0
+                        val toReceive = (body["toReceive"] as? Number)?.toDouble() ?: 0.0
+                        val netBalance = (body["netBalance"] as? Number)?.toDouble() ?: 0.0
+                        view.showSummary(toPay, toReceive, netBalance)
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<Map<String, Any>>,
+                    t: Throwable
+                ) {
+                    // silent fail
+                }
+            })
     }
 }

@@ -1,10 +1,9 @@
 package com.example.sharedbalance.screens.expenses.calculate
 
 data class CalculateRequest(
-
-    val groupName: String,
-
-    val payer: String,
-
-    val amount: Double
+    val groupId: Long,
+    val payer: String,          // ✅ was payerEmail
+    val amount: Double,
+    val participants: List<String>,  // ✅ was missing
+    val groupName: String       // ✅ was missing
 )

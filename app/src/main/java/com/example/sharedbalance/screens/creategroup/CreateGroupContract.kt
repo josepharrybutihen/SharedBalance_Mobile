@@ -10,16 +10,16 @@ interface CreateGroupContract {
 
         fun hideLoading()
 
-        fun showSuccess(
-            message: String
-        )
+        fun showUsers(users: List<User>)
 
-        fun showError(
-            message: String
-        )
+        fun showSuccess(message: String)
+
+        fun showError(message: String)
     }
 
     interface Presenter {
+
+        fun loadUsers()
 
         fun createGroup(
             request: CreateGroupRequest
@@ -27,6 +27,9 @@ interface CreateGroupContract {
     }
 
     interface Model {
+
+        fun getUsers():
+                Call<UsersResponse>
 
         fun createGroup(
             request: CreateGroupRequest

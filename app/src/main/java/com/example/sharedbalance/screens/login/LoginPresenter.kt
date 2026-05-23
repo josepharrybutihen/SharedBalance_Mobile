@@ -1,90 +1,66 @@
 package com.example.sharedbalance.screens.login
 
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import android.content.Context
+import android.util.Log
 
 class LoginPresenter(
-
+    private val context: Context,
     private val view: LoginContract.View,
-
     private val model: LoginContract.Model
+) : LoginContract.Presenter,
+    LoginContract.OnLoginListener {
 
-) : LoginContract.Presenter {
+    override fun login(email: String, password: String) {
 
-    override fun login(
-        email: String,
-        password: String
-    ) {
-
-        if (
-            email.isEmpty() ||
-            password.isEmpty()
-        ) {
-
-            view.showError(
-                "Please fill all fields"
-            )
-
-            return
+        when {
+            email.isEmpty() -> {
+                view.showError("Email required")
+                return
+            }
+            password.isEmpty() -> {
+                view.showError("Password required")
+                return
+            }
         }
 
         view.showLoading()
 
-        val request =
-            LoginRequest(
-                email,
-                password
-            )
+        model.login(
+            LoginRequest(email, password),
+            this
+        )
+    }
 
-        model.login(request)
-            .enqueue(
+    override fun onSuccess(payload: LoginPayload) {
 
-                object :
-                    Callback<LoginResponse> {
+        view.hideLoading()
 
-                    override fun onResponse(
-                        call: Call<LoginResponse>,
-                        response: Response<LoginResponse>
-                    ) {
+        val prefs = context.getSharedPreferences(
+            "sharedbalance",
+            Context.MODE_PRIVATE
+        )
 
-                        view.hideLoading()
+        // ✅ DEBUG (ADD HERE)
+        Log.d("AUTH", "Saving token = ${payload.accessToken}")
 
-                        if (
-                            response.isSuccessful &&
-                            response.body() != null &&
-                            response.body()!!.success
-                        ) {
+        prefs.edit()
+            .putInt("userId", payload.account.id ?: -1)
+            .putString("token", payload.accessToken) // 🔥 IMPORTANT
+            .putString("email", payload.account.email)
+            .apply()
 
-                            val data =
-                                response.body()!!
+        // ✅ VERIFY IMMEDIATELY (ADD THIS DEBUG)
+        Log.d("AUTH", "Saved token = " + prefs.getString("token", "NULL"))
 
-                            view.showSuccess(
-                                data.message,
-                                data.userId
-                            )
+        view.showSuccess(
+            "Login successful",
+            payload.account.id ?: -1,
+            payload.accessToken
+        )
+    }
 
-                        } else {
-
-                            view.showError(
-                                "Invalid credentials"
-                            )
-                        }
-                    }
-
-                    override fun onFailure(
-                        call: Call<LoginResponse>,
-                        t: Throwable
-                    ) {
-
-                        view.hideLoading()
-
-                        view.showError(
-                            t.message
-                                ?: "Network error"
-                        )
-                    }
-                }
-            )
+    override fun onError(msg: String) {
+        view.hideLoading()
+        view.showError(msg)
     }
 }

@@ -20,12 +20,12 @@ class RegisterPresenter(
         when {
 
             firstName.isEmpty() -> {
-                view.showError("Name required")
+                view.showError("First name required")
                 return
             }
 
             lastName.isEmpty() -> {
-                view.showError("Name required")
+                view.showError("Last name required")
                 return
             }
 
@@ -39,6 +39,11 @@ class RegisterPresenter(
                 return
             }
 
+            confirm.isEmpty() -> {
+                view.showError("Confirm password required")
+                return
+            }
+
             pass != confirm -> {
                 view.showError("Passwords do not match")
                 return
@@ -48,10 +53,11 @@ class RegisterPresenter(
         view.showLoading()
 
         val request = RegisterRequest(
-            firstName,
-            lastName,
-            email,
-            pass
+            firstName = firstName,
+            lastName = lastName,
+            email = email,
+            password = pass,
+            confirmPassword = confirm
         )
 
         model.register(request, this)

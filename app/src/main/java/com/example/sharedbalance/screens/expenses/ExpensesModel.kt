@@ -1,17 +1,16 @@
 package com.example.sharedbalance.screens.expenses
 
-import com.example.sharedbalance.data.api.ApiClient
-
+import com.example.sharedbalance.data.api.ApiResponse
+import com.example.sharedbalance.data.api.ApiService
 import retrofit2.Call
 
-class ExpensesModel :
-    ExpensesContract.Model {
+class ExpensesModel(
+    private val apiService: ApiService
+) : ExpensesContract.Model {
 
-    override fun getGroups():
-            Call<List<Group>> {
+    override fun getGroups(email: String): Call<ApiResponse<List<Group>>> =
+        apiService.getGroups(email)
 
-        return ApiClient
-            .apiService
-            .getGroups()
-    }
+    override fun getBalance(email: String): Call<Map<String, Any>> =
+        apiService.getBalance(email)
 }
