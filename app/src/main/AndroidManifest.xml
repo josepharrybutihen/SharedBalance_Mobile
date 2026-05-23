@@ -14,8 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SharedBalance"
         tools:targetApi="31">
-        <activity
-            android:name=".screens.login.LoginActivity"
+        <activity android:name=".screens.login.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,6 +22,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".screens.home.HomeActivity" />
+        <activity android:name=".screens.register.RegisterActivity" />
+        <activity android:name=".screens.profile.ProfileActivity" />
+        <activity android:name=".screens.expenses.ExpensesActivity" />
+        <activity android:name=".screens.history.HistoryActivity" />
+        <activity android:name=".screens.creategroup.CreateGroupActivity" />
+        <activity android:name=".screens.account.AccountActivity" />
+        <activity android:name=".screens.settings.SettingsActivity" />
+        <activity android:name=".screens.landing.LandingActivity" />
+        <activity android:name=".screens.expenses.details.GroupDetailsActivity" />
+        <activity android:name=".screens.expenses.calculate.CalculateExpenseActivity" />
+        <activity android:name=".screens.expenses.breakdown.ExpenseBreakdownActivity" />
+        <activity android:name=".screens.profile.editprofile.EditProfileActivity" />
     </application>
 
 </manifest>

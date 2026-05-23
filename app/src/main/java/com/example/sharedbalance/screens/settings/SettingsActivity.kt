@@ -1,6 +1,5 @@
 package com.example.sharedbalance.screens.settings
 
-import SettingsModel
 import android.app.Activity
 import android.os.Bundle
 import android.widget.ArrayAdapter

@@ -6,9 +6,13 @@ data class CreateGroupRequest(
 
     val description: String,
 
-    val createdBy: Int,
-
     val members: List<String>,
 
-    val category: String
+    val category: String,
+
+    val categoryImg: String,
+
+    val creatorName: String,
+
+    val creatorEmail: String
 )

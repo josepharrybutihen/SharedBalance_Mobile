@@ -1,39 +1,65 @@
 package com.example.sharedbalance.screens.history
 
-class HistoryModel : HistoryContract.Model {
+import android.content.Context
+import com.example.sharedbalance.data.api.ApiClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-    data class TransactionHistory(
-        val groupName: String,
-        val transactionType: String,
-        val date: String
-    )
+class HistoryModel(
+    private val context: Context
+) : HistoryContract.Model {
 
-    override fun getHistory(listener: HistoryContract.OnHistoryListener) {
+    private val api =
+        ApiClient.create(context)
 
-        val historyList = listOf(
-            TransactionHistory(
-                "Champs Outing",
-                "Expense Calculated",
-                "May 14"
-            ),
+    override fun getHistory(
+        email: String,
+        listener: HistoryContract.OnHistoryListener
+    ) {
 
-            TransactionHistory(
-                "Beach Trip",
-                "Payment Received",
-                "May 13"
-            ),
+        api.getHistory(email)
+            .enqueue(
 
-            TransactionHistory(
-                "Food Trip",
-                "Expense Added",
-                "May 12"
+                object :
+                    Callback<List<TransactionHistory>> {
+
+                    override fun onResponse(
+                        call: Call<List<TransactionHistory>>,
+                        response: Response<List<TransactionHistory>>
+                    ) {
+
+                        println("HISTORY CODE = ${response.code()}")
+                        println("HISTORY BODY = ${response.body()}")
+
+                        if (
+                            response.isSuccessful &&
+                            response.body() != null
+                        ) {
+
+                            listener.onSuccess(
+                                response.body()!!
+                            )
+
+                        } else {
+
+                            listener.onError(
+                                "Failed to load history"
+                            )
+                        }
+                    }
+
+                    override fun onFailure(
+                        call: Call<List<TransactionHistory>>,
+                        t: Throwable
+                    ) {
+
+                        listener.onError(
+                            t.message
+                                ?: "Network error"
+                        )
+                    }
+                }
             )
-        )
-
-        if (historyList.isNotEmpty()) {
-            listener.onSuccess(historyList)
-        } else {
-            listener.onError("No history found")
-        }
     }
 }

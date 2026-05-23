@@ -1,5 +1,7 @@
 package com.example.sharedbalance.data.api
 
+import android.content.Context
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -8,13 +10,16 @@ object ApiClient {
     private const val BASE_URL =
         "https://sharedbalance-backend-1.onrender.com/"
 
-    val apiService: ApiService by lazy {
+    fun create(context: Context): ApiService {
 
-        Retrofit.Builder()
+        val client = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(context))
+            .build()
+
+        return Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(
-                GsonConverterFactory.create()
-            )
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiService::class.java)
     }

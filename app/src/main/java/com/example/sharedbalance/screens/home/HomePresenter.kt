@@ -1,132 +1,129 @@
 package com.example.sharedbalance.screens.home
 
+import com.example.sharedbalance.data.api.ApiResponse
 import com.example.sharedbalance.screens.expenses.Group
-
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class HomePresenter(
-
-    private val view:
-    HomeContract.View,
-
-    private val model:
-    HomeContract.Model
-
+    private val view: HomeContract.View,
+    private val model: HomeContract.Model
 ) : HomeContract.Presenter {
 
-    override fun loadHomeData(
-        userId: Int
-    ) {
+    private var summaryLoaded = false
+    private var groupsLoaded = false
+
+    override fun loadHomeData(email: String) {
 
         view.showLoading()
 
-        loadSummary(userId)
+        summaryLoaded = false
+        groupsLoaded = false
 
-        loadGroups(userId)
+        loadSummary(email)
+        loadGroups(email)
     }
 
-    private fun loadSummary(
-        userId: Int
-    ) {
+    private fun loadSummary(email: String) {
 
-        model.getSummary(userId)
-            .enqueue(
+        model.getSummary(email)
+            .enqueue(object : Callback<Map<String, Any>> {
 
-                object :
-                    Callback<HomeSummaryResponse> {
+                override fun onResponse(
+                    call: Call<Map<String, Any>>,
+                    response: Response<Map<String, Any>>
+                ) {
 
-                    override fun onResponse(
-                        call: Call<HomeSummaryResponse>,
-                        response: Response<HomeSummaryResponse>
-                    ) {
+                    println("SUMMARY RESPONSE CODE = ${response.code()}")
+                    println("SUMMARY BODY = ${response.body()}")
 
-                        if (
-                            response.isSuccessful &&
-                            response.body() != null
-                        ) {
+                    val body = response.body()
 
-                            val data =
-                                response.body()!!
+                    if (response.isSuccessful && body != null) {
 
-                            view.showSummary(
-                                data.toPay,
-                                data.received,
-                                data.net
-                            )
-                        }
-                    }
+                        val toPay =
+                            (body["toPay"] as Number).toDouble()
 
-                    override fun onFailure(
-                        call: Call<HomeSummaryResponse>,
-                        t: Throwable
-                    ) {
+                        val toReceive =
+                            (body["toReceive"] as Number).toDouble()
 
-                        view.showError(
-                            t.message
-                                ?: "Summary load failed"
+                        val netBalance =
+                            (body["netBalance"] as Number).toDouble()
+
+                        view.showSummary(
+                            toPay,
+                            toReceive,
+                            netBalance
                         )
                     }
+
+                    summaryLoaded = true
+                    checkDone()
                 }
-            )
+
+                override fun onFailure(
+                    call: Call<Map<String, Any>>,
+                    t: Throwable
+                ) {
+
+                    view.showError(
+                        t.message ?: "Summary failed"
+                    )
+
+                    summaryLoaded = true
+                    checkDone()
+                }
+            })
     }
 
-    private fun loadGroups(
-        userId: Int
-    ) {
+    private fun loadGroups(email: String) {
 
-        model.getGroups(userId)
-            .enqueue(
+        model.getGroups(email)
+            .enqueue(object : Callback<ApiResponse<List<Group>>> {
 
-                object :
-                    Callback<List<Group>> {
+                override fun onResponse(
+                    call: Call<ApiResponse<List<Group>>>,
+                    response: Response<ApiResponse<List<Group>>>
+                ) {
 
-                    override fun onResponse(
-                        call: Call<List<Group>>,
-                        response: Response<List<Group>>
+                    println("GROUPS RESPONSE CODE = ${response.code()}")
+                    println("GROUPS BODY = ${response.body()}")
+
+                    val groups = response.body()?.payload?.reversed()  // ✅ newest first
+
+                    if (
+                        response.isSuccessful &&
+                        !groups.isNullOrEmpty()
                     ) {
-
-                        view.hideLoading()
-
-                        if (
-                            response.isSuccessful &&
-                            response.body() != null
-                        ) {
-
-                            val groups =
-                                response.body()!!
-
-                            if (groups.isEmpty()) {
-
-                                view.showEmptyGroups()
-
-                            } else {
-
-                                view.showGroups(groups)
-                            }
-
-                        } else {
-
-                            view.showError(
-                                "Failed loading groups"
-                            )
-                        }
+                        view.showGroups(groups)
+                    } else {
+                        view.showEmptyGroups()
                     }
 
-                    override fun onFailure(
-                        call: Call<List<Group>>,
-                        t: Throwable
-                    ) {
-
-                        view.hideLoading()
-
-                        view.showError(
-                            t.message
-                                ?: "Network error"
-                        )
-                    }
+                    groupsLoaded = true
+                    checkDone()
                 }
-            )
+
+                override fun onFailure(
+                    call: Call<ApiResponse<List<Group>>>,
+                    t: Throwable
+                ) {
+
+                    view.showError(
+                        t.message ?: "Network error"
+                    )
+
+                    groupsLoaded = true
+                    checkDone()
+                }
+            })
+    }
+
+    private fun checkDone() {
+
+        if (summaryLoaded && groupsLoaded) {
+            view.hideLoading()
+        }
     }
 }

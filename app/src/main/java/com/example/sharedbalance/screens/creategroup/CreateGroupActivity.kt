@@ -8,6 +8,9 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+
 import com.example.sharedbalance.R
 
 class CreateGroupActivity :
@@ -20,12 +23,6 @@ class CreateGroupActivity :
     private lateinit var etDescription:
             EditText
 
-    private lateinit var etMembers:
-            EditText
-
-    private lateinit var etCategory:
-            EditText
-
     private lateinit var btnCreate:
             Button
 
@@ -35,8 +32,23 @@ class CreateGroupActivity :
     private lateinit var progressBar:
             ProgressBar
 
+    private lateinit var recyclerMembers:
+            RecyclerView
+
+    private lateinit var recyclerCategories:
+            RecyclerView
+
     private lateinit var presenter:
             CreateGroupPresenter
+
+    private val selectedMembers =
+        mutableListOf<User>()
+
+    private var selectedCategory =
+        "beach"
+
+    private var selectedCategoryImg =
+        ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -48,11 +60,14 @@ class CreateGroupActivity :
 
         initViews()
 
-        presenter =
-            CreateGroupPresenter(
-                this,
-                CreateGroupModel()
-            )
+        presenter = CreateGroupPresenter(
+            this,
+            CreateGroupModel(this)
+        )
+
+        presenter.loadUsers()
+
+        setupCategories()
 
         setupListeners()
     }
@@ -65,12 +80,6 @@ class CreateGroupActivity :
         etDescription =
             findViewById(R.id.etDescription)
 
-        etMembers =
-            findViewById(R.id.etMembers)
-
-        etCategory =
-            findViewById(R.id.etCategory)
-
         btnCreate =
             findViewById(R.id.btnCreate)
 
@@ -79,6 +88,63 @@ class CreateGroupActivity :
 
         progressBar =
             findViewById(R.id.progressBar)
+
+        recyclerMembers =
+            findViewById(R.id.recyclerMembers)
+
+        recyclerCategories =
+            findViewById(R.id.recyclerCategories)
+    }
+
+    private fun setupCategories() {
+
+        val categories = listOf(
+            R.drawable.beach,
+            R.drawable.dinner,
+            R.drawable.hotel,
+            R.drawable.party,
+            R.drawable.roadtrip,
+            R.drawable.others,
+        )
+
+        recyclerCategories.layoutManager =
+            LinearLayoutManager(
+                this,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+
+        recyclerCategories.adapter =
+            CategoryAdapter(
+                categories,
+                categories[0]
+            ) {
+
+                selectedCategoryImg =
+                    it.toString()
+
+                selectedCategory =
+                    when (it) {
+
+                        R.drawable.beach ->
+                            "beach"
+
+                        R.drawable.dinner ->
+                            "dinner"
+
+                        R.drawable.hotel ->
+                            "hotel"
+
+                        R.drawable.party ->
+                            "party"
+
+                        R.drawable.roadtrip ->
+                            "roadtrip"
+
+                        else ->
+                            "others"
+                    }
+            }
     }
 
     private fun setupListeners() {
@@ -91,26 +157,27 @@ class CreateGroupActivity :
         btnCreate.setOnClickListener {
 
             val name =
-                etGroupName.text.toString().trim()
+                etGroupName.text.toString()
 
             val description =
-                etDescription.text.toString().trim()
-
-            val membersText =
-                etMembers.text.toString().trim()
-
-            val category =
-                etCategory.text.toString().trim()
+                etDescription.text.toString()
 
             if (
                 name.isEmpty() ||
-                description.isEmpty() ||
-                membersText.isEmpty() ||
-                category.isEmpty()
+                description.isEmpty()
             ) {
 
                 showError(
                     "Complete all fields"
+                )
+
+                return@setOnClickListener
+            }
+
+            if (selectedMembers.isEmpty()) {
+
+                showError(
+                    "Select members"
                 )
 
                 return@setOnClickListener
@@ -122,26 +189,62 @@ class CreateGroupActivity :
                     MODE_PRIVATE
                 )
 
-            val userId =
-                prefs.getInt(
-                    "userId",
-                    -1
-                )
+            val creatorName =
+                prefs.getString(
+                    "name",
+                    ""
+                ) ?: ""
+
+            val creatorEmail =
+                prefs.getString(
+                    "email",
+                    ""
+                ) ?: ""
 
             val members =
-                membersText.split(",")
+                selectedMembers.map {
+                    it.email
+                }
 
             val request =
                 CreateGroupRequest(
                     name,
                     description,
-                    userId,
                     members,
-                    category
+                    selectedCategory,
+                    selectedCategoryImg,
+                    creatorName,
+                    creatorEmail
                 )
 
             presenter.createGroup(request)
         }
+    }
+
+    override fun showUsers(
+        users: List<User>
+    ) {
+
+        recyclerMembers.layoutManager =
+            LinearLayoutManager(this)
+
+        recyclerMembers.adapter =
+            MemberAdapter(
+                users,
+                selectedMembers
+            ) { user ->
+
+                if (
+                    selectedMembers.contains(user)
+                ) {
+
+                    selectedMembers.remove(user)
+
+                } else {
+
+                    selectedMembers.add(user)
+                }
+            }
     }
 
     override fun showLoading() {

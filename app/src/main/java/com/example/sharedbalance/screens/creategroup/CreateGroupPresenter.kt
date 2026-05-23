@@ -14,6 +14,59 @@ class CreateGroupPresenter(
 
 ) : CreateGroupContract.Presenter {
 
+    override fun loadUsers() {
+
+        view.showLoading()
+
+        model.getUsers()
+            .enqueue(
+
+                object :
+                    Callback<UsersResponse> {
+
+                    override fun onResponse(
+                        call: Call<UsersResponse>,
+                        response: Response<UsersResponse>
+                    ) {
+
+                        view.hideLoading()
+
+                        val body =
+                            response.body()
+
+                        if (
+                            response.isSuccessful &&
+                            body?.payload != null
+                        ) {
+
+                            view.showUsers(
+                                body.payload
+                            )
+
+                        } else {
+
+                            view.showError(
+                                "Failed to load users"
+                            )
+                        }
+                    }
+
+                    override fun onFailure(
+                        call: Call<UsersResponse>,
+                        t: Throwable
+                    ) {
+
+                        view.hideLoading()
+
+                        view.showError(
+                            t.message
+                                ?: "Network error"
+                        )
+                    }
+                }
+            )
+    }
+
     override fun createGroup(
         request: CreateGroupRequest
     ) {
@@ -33,31 +86,17 @@ class CreateGroupPresenter(
 
                         view.hideLoading()
 
-                        if (
-                            response.isSuccessful &&
-                            response.body() != null
-                        ) {
+                        if (response.isSuccessful) {
 
-                            val result =
-                                response.body()!!
-
-                            if (result.success) {
-
-                                view.showSuccess(
-                                    result.message
-                                )
-
-                            } else {
-
-                                view.showError(
-                                    result.message
-                                )
-                            }
+                            view.showSuccess(
+                                response.body()?.message
+                                    ?: "Group created successfully"
+                            )
 
                         } else {
 
                             view.showError(
-                                "Failed to create group"
+                                "Failed creating group"
                             )
                         }
                     }

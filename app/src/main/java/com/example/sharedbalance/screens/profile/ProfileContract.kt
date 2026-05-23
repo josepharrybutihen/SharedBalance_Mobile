@@ -3,23 +3,17 @@ package com.example.sharedbalance.screens.profile
 interface ProfileContract {
 
     interface View {
-
-        fun showUser(
-            firstName: String,
-            lastName: String,
-            email: String
-        )
-
-        fun showSuccess()
-
+        fun showLoading()
+        fun hideLoading()
+        fun showUser(firstName: String, lastName: String, email: String)
+        fun showSuccess(message: String)
         fun showError(message: String)
     }
 
     interface Presenter {
-
-        fun loadUser()
-
+        fun loadUser(email: String)
         fun saveProfile(
+            email: String,
             firstName: String,
             lastName: String,
             password: String,
@@ -28,18 +22,13 @@ interface ProfileContract {
     }
 
     interface Model {
-
-        fun getUser(): User
-
-        fun saveUser(
-            firstName: String,
-            lastName: String
-        )
+        fun getUser(email: String, listener: OnFinishedListener)
+        fun updateProfile(email: String, request: ProfileRequest, listener: OnFinishedListener)
     }
 
-    data class User(
-        val firstName: String,
-        val lastName: String,
-        val email: String
-    )
+    interface OnFinishedListener {
+        fun onUserLoaded(response: ProfileResponse)
+        fun onSuccess(response: ProfileResponse)
+        fun onError(message: String)
+    }
 }

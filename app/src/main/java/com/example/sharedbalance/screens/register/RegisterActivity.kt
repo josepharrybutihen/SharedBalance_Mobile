@@ -51,7 +51,7 @@ class RegisterActivity :
 
         presenter = RegisterPresenter(
             this,
-            RegisterModel()
+            RegisterModel(this)
         )
 
         etFirstName =

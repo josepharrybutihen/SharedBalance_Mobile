@@ -216,6 +216,7 @@
 
         <!-- HOME -->
         <LinearLayout
+            android:id="@+id/navHome"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -238,6 +239,7 @@
 
         <!-- EXPENSES -->
         <LinearLayout
+            android:id="@+id/navExpenses"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -261,6 +263,7 @@
 
         <!-- HISTORY -->
         <LinearLayout
+            android:id="@+id/navHistory"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -283,6 +286,7 @@
 
         <!-- ACCOUNT -->
         <LinearLayout
+            android:id="@+id/navAccount"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

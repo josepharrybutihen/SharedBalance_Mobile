@@ -1,12 +1,19 @@
 package com.example.sharedbalance.screens.account
 
-class AccountModel : AccountContract.Model {
+import android.content.Context
+import com.example.sharedbalance.data.api.ApiClient
+import retrofit2.Call
 
-    override fun getUser(): AccountContract.User {
+class AccountModel(
+    private val context: Context
+) : AccountContract.Model {
 
-        return AccountContract.User(
-            "Kitty Cat",
-            "kitty.cat@gmail.com"
-        )
+    private val api =
+        ApiClient.create(context)
+
+    override fun getUser():
+            Call<UserProfileResponse> {
+
+        return api.getUserProfile()
     }
 }

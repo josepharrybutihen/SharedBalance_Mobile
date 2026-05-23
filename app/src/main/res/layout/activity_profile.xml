@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,17 +6,14 @@
     android:background="@drawable/bg_gradient"
     android:fitsSystemWindows="true">
 
-    <!-- MAIN CONTENT -->
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:gravity="center"
         android:padding="20dp">
 
-        <!-- PROFILE CARD -->
         <LinearLayout
-            android:layout_width="340dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/bg_card"
@@ -36,16 +32,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="15dp">
 
-                <!-- PROFILE IMAGE -->
                 <ImageView
                     android:id="@+id/imgProfile"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/ic_account" />
 
-                <!-- USER INFO -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -56,36 +51,35 @@
                         android:id="@+id/tvProfileName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Kitty Cat"
+                        android:text="Full Name"
                         android:textStyle="bold"
-                        android:textSize="24sp"
+                        android:textSize="20sp"
                         android:textColor="#111111" />
 
                     <TextView
                         android:id="@+id/tvProfileEmail"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="kitty.cat@gmail.com"
+                        android:text="email@example.com"
                         android:textSize="13sp"
                         android:textColor="#666666"
                         android:layout_marginTop="4dp" />
 
+                    <!-- ✅ edit photo button -->
                     <Button
                         android:id="@+id/btnEditPhoto"
                         android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:text="Edit photo"
+                        android:layout_height="36dp"
+                        android:text="Edit Photo"
                         android:textAllCaps="false"
                         android:textStyle="bold"
                         android:textColor="@android:color/white"
                         android:backgroundTint="#159A78"
-                        android:layout_marginTop="10dp" />
+                        android:layout_marginTop="8dp" />
 
                 </LinearLayout>
-
             </LinearLayout>
 
-            <!-- NAME -->
             <!-- FIRST NAME -->
             <TextView
                 android:layout_width="wrap_content"
@@ -98,7 +92,7 @@
             <EditText
                 android:id="@+id/etFirstName"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="44dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_input"
                 android:paddingHorizontal="12dp"
@@ -118,7 +112,7 @@
             <EditText
                 android:id="@+id/etLastName"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="44dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_input"
                 android:paddingHorizontal="12dp"
@@ -126,7 +120,7 @@
                 android:textColor="#000000"
                 android:textColorHint="#999999" />
 
-            <!-- EMAIL -->
+            <!-- EMAIL (read only) -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -138,17 +132,16 @@
             <EditText
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="44dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_input"
                 android:paddingHorizontal="12dp"
-                android:text="kitty.cat@gmail.com"
-                android:textColor="#666666"
+                android:textColor="#999999"
                 android:enabled="false"
                 android:focusable="false"
                 android:clickable="false" />
 
-            <!-- PASSWORD -->
+            <!-- NEW PASSWORD -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -160,11 +153,11 @@
             <EditText
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="44dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_input"
                 android:paddingHorizontal="12dp"
-                android:hint="Enter new password"
+                android:hint="Leave blank to keep current"
                 android:inputType="textPassword"
                 android:textColor="#000000"
                 android:textColorHint="#999999" />
@@ -181,7 +174,7 @@
             <EditText
                 android:id="@+id/etConfirmPassword"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="44dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_input"
                 android:paddingHorizontal="12dp"
@@ -195,9 +188,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="34dp">
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="10dp">
 
-                <!-- CANCEL -->
                 <Button
                     android:id="@+id/btnCancel"
                     android:layout_width="0dp"
@@ -210,12 +203,10 @@
                     android:textColor="@android:color/white"
                     android:backgroundTint="#E91E1E" />
 
-                <!-- SPACE -->
                 <Space
-                    android:layout_width="20dp"
+                    android:layout_width="16dp"
                     android:layout_height="wrap_content" />
 
-                <!-- SAVE -->
                 <Button
                     android:id="@+id/btnSave"
                     android:layout_width="0dp"
@@ -230,110 +221,16 @@
 
             </LinearLayout>
 
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <!-- BOTTOM NAVIGATION -->
-    <!-- BOTTOM NAVIGATION -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="@android:color/white"
-        android:orientation="horizontal"
-        android:paddingTop="6dp"
-        android:paddingBottom="4dp"
-        android:elevation="8dp">
-
-        <!-- HOME -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_home" />
-
-            <TextView
+            <ProgressBar
+                android:id="@+id/progressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Home"
-                android:textSize="11sp"
-                android:textColor="#000000"
-                android:layout_marginTop="4dp"/>
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:visibility="gone"/>
+
         </LinearLayout>
 
-        <!-- EXPENSES -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_expenses" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Expenses"
-                android:textSize="11sp"
-                android:textColor="#000000"
-                android:layout_marginTop="4dp"/>
-        </LinearLayout>
-
-        <!-- HISTORY -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_history" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="History"
-                android:textSize="11sp"
-                android:textColor="#000000"
-                android:layout_marginTop="4dp"/>
-        </LinearLayout>
-
-        <!-- ACCOUNT -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_account" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Account"
-                android:textStyle="bold"
-                android:textSize="11sp"
-                android:textColor="#159A78"
-                android:layout_marginTop="4dp"/>
-        </LinearLayout>
-
-    </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
